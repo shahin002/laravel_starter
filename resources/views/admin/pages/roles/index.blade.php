@@ -11,8 +11,10 @@
             <div class="block-content">
                 <div class="block-header">
                     <h3 class="block-title col-md-6">Role List</h3>
-                    <a href="{{route('admin.roles.create')}}" class="pull-right btn btn-primary btn-rounded">Add
-                        Role</a>
+                    @can('roles.create')
+                        <a href="{{route('admin.roles.create')}}" class="pull-right btn btn-primary btn-rounded">Add
+                            Role</a>
+                    @endcan
                 </div>
                 <!-- DataTables init on table by adding .js-dataTable-full class, functionality initialized in js/pages/base_tables_datatables.js -->
                 <table class="table table-bordered table-striped js-dataTable-full">
@@ -34,18 +36,22 @@
                             <td>{{$role->getPermissionDisplayNames()->implode(", ")}}</td>--}}
                             <td class="text-center">
                                 <div class="btn-group">
-                                    <a href="{{route('admin.roles.edit',$role->id)}}" class="btn btn-xs btn-default"
-                                       type="button" data-toggle="tooltip" title="Edit Role"><i
-                                                class="fa fa-pencil"></i></a>
-                                    <form class="role-remove"
-                                          action="{{route('admin.roles.destroy',$role->id)}}" method="POST">
-                                        @method('DELETE')
-                                        @csrf
-                                        <button class="btn btn-xs btn-default" type="submit"
-                                                data-toggle="tooltip"
-                                                title="Remove Role"><i class="fa fa-times"></i>
-                                        </button>
-                                    </form>
+                                    @can('roles.edit')
+                                        <a href="{{route('admin.roles.edit',$role->id)}}" class="btn btn-xs btn-default"
+                                           type="button" data-toggle="tooltip" title="Edit Role"><i
+                                                    class="fa fa-pencil"></i></a>
+                                    @endcan
+                                    @can('roles.delete')
+                                        <form class="role-remove"
+                                              action="{{route('admin.roles.destroy',$role->id)}}" method="POST">
+                                            @method('DELETE')
+                                            @csrf
+                                            <button class="btn btn-xs btn-default" type="submit"
+                                                    data-toggle="tooltip"
+                                                    title="Remove Role"><i class="fa fa-times"></i>
+                                            </button>
+                                        </form>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>
@@ -85,7 +91,7 @@
 
     <link rel="stylesheet" href="{{asset('admin_assets/js/plugins/datatables/jquery.dataTables.min.css')}}">
     <style type="text/css">
-        .role-remove{
+        .role-remove {
             float: left;
         }
     </style>

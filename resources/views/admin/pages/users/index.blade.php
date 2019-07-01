@@ -11,8 +11,10 @@
             <div class="block-content">
                 <div class="block-header">
                     <h3 class="block-title col-md-6">User List</h3>
-                    <a href="{{route('admin.users.create')}}" class="pull-right btn btn-primary btn-rounded">Add
-                        User</a>
+                    @can('user.create')
+                        <a href="{{route('admin.users.create')}}" class="pull-right btn btn-primary btn-rounded">Add
+                            User</a>
+                    @endcan
                 </div>
                 <!-- DataTables init on table by adding .js-dataTable-full class, functionality initialized in js/pages/base_tables_datatables.js -->
                 <table class="table table-bordered table-striped js-dataTable-full">
@@ -36,18 +38,22 @@
                             <td>{{$user->getPermissionDisplayNames()->implode(", ")}}</td>
                             <td class="text-center">
                                 <div class="btn-group">
-                                    <a href="{{route('admin.users.edit',$user->id)}}" class="btn btn-xs btn-default"
-                                       type="button" data-toggle="tooltip" title="Edit User"><i
-                                                class="fa fa-pencil"></i></a>
-                                    <form class="user-remove"
-                                          action="{{route('admin.users.destroy',$user->id)}}" method="POST">
-                                        @method('DELETE')
-                                        @csrf
-                                        <button class="btn btn-xs btn-default" type="submit"
-                                                data-toggle="tooltip"
-                                                title="Remove User"><i class="fa fa-times"></i>
-                                        </button>
-                                    </form>
+                                    @can('users.edit')
+                                        <a href="{{route('admin.users.edit',$user->id)}}" class="btn btn-xs btn-default"
+                                           type="button" data-toggle="tooltip" title="Edit User"><i
+                                                    class="fa fa-pencil"></i></a>
+                                    @endcan
+                                    @can('users.delete')
+                                        <form class="user-remove"
+                                              action="{{route('admin.users.destroy',$user->id)}}" method="POST">
+                                            @method('DELETE')
+                                            @csrf
+                                            <button class="btn btn-xs btn-default" type="submit"
+                                                    data-toggle="tooltip"
+                                                    title="Remove User"><i class="fa fa-times"></i>
+                                            </button>
+                                        </form>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>
@@ -87,7 +93,7 @@
 
     <link rel="stylesheet" href="{{asset('admin_assets/js/plugins/datatables/jquery.dataTables.min.css')}}">
     <style type="text/css">
-        .user-remove{
+        .user-remove {
             float: left;
         }
     </style>
