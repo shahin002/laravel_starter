@@ -1,3 +1,29 @@
+/*
+ *  Document   : app.js
+ *  Author     : pixelcave
+ *  Description: UI Framework Custom Functionality (available to all pages)
+ *
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class CustomScript {
     static formValidation(formClass) {
         jQuery(formClass).validate({

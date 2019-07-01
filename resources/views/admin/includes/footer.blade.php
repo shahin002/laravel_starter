@@ -4,7 +4,7 @@
                                                                  target="_blank">MD. SHAHIN</a>
     </div>
     <div class="pull-left">
-        <a class="font-w600" href="http://goo.gl/6LF10W" target="_blank">M. Ali cloths & Garments 1.0</a> &copy; <span
+        <a class="font-w600" href="javascript://" target="_blank">Laravel Starter V.1</a> &copy; <span
                 class="js-year-copy"></span>
     </div>
 </footer>

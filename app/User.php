@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Collection;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -42,4 +43,21 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = bcrypt($password);
     }
+
+    public function getAllPermissionsName()
+    {
+        return $this->getAllPermissions()->pluck('name');
+    }
+
+
+    public function getRoleDisplayNames(): Collection
+    {
+        return $this->roles->pluck('display_name');
+    }
+
+    public function getPermissionDisplayNames(): Collection
+    {
+        return $this->permissions->pluck('display_name');
+    }
+
 }

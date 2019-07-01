@@ -115,7 +115,7 @@
 <script>
     // Initialize when page loads
     jQuery(function () {
-        loginFormValidation.init();
+        BasePagesLogin.init();
     });
 </script>
 </body>

@@ -3,9 +3,10 @@
  *  Author     : pixelcave
  *  Description: Custom JS code used in Login Page
  */
-
-var loginFormValidation = function() {
+var BasePagesLogin = function() {
     // Init Login Form Validation, for more examples you can check out https://github.com/jzaefferer/jquery-validation
+    var loginFormValidation = function() {
+        // Init Login Form Validation, for more examples you can check out https://github.com/jzaefferer/jquery-validation
         jQuery('.js-validation-login').validate({
             errorClass: 'help-block text-right animated fadeInDown',
             errorElement: 'div',
@@ -22,5 +23,13 @@ var loginFormValidation = function() {
             },
 
         });
+    };
+
+    return {
+        init: function () {
+            // Init Login Form Validation
+            loginFormValidation();
+        }
+    };
 }();
 
