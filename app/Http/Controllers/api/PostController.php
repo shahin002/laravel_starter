@@ -6,6 +6,8 @@ use App\Http\Traits\ApiStatus;
 use App\Post;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
@@ -25,58 +27,48 @@ class PostController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create() {
-        return view('admin.pages.posts.create');
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-
-        //Validating title and body field
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'title'=>'required|max:100',
             'body' =>'required',
         ]);
+        if ($validator->fails()) {
+            $response['message'] = $validator->errors()->first();
+            return $this->failureResponse($response);
+        }
 
-        $post = Post::create($request->only('title', 'body'));
+        $input = $validator->validated();
 
-        //Display a successful message upon save
-        return redirect()->route('admin.posts.index')
-            ->with('msg', 'Article,
-             '. $post->title.' created');
+        DB::beginTransaction();
+
+        try {
+            $post = Post::create($input);
+            DB::commit();
+
+            $response['post'] = $post;
+            $response['message'] = 'Post Saved Successfully';
+            return $this->successResponse($response);
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+            // something went wrong
+            $response['message'] = 'Post can not save properly';
+            return $this->failureResponse($response);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id) {
-        $post = Post::findOrFail($id); //Find post of id = $id
-
-        return view ('admin.pages.posts.show', compact('post'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id) {
+    public function show($id)
+    {
         $post = Post::findOrFail($id);
 
-        return view('admin.pages.posts.edit', compact('post'));
+        $response['post'] = $post;
+        $response['message'] = 'Post View';
+        return $this->successResponse($response);
     }
 
     /**
@@ -87,19 +79,36 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        $this->validate($request, [
+        $post = Post::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
             'title'=>'required|max:100',
             'body'=>'required',
         ]);
 
-        $post = Post::findOrFail($id);
-        $post->title = $request->input('title');
-        $post->body = $request->input('body');
-        $post->save();
+        if ($validator->fails()) {
+            $response['message'] = $validator->errors()->first();
+            return $this->failureResponse($response);
+        }
 
-        return redirect()->route('admin.posts.index',
-            $post->id)->with('msg',
-            'Article, '. $post->title.' updated');
+        DB::beginTransaction();
+
+        try {
+            $post->title = $request->input('title');
+            $post->body = $request->input('body');
+            $post->save();
+            DB::commit();
+
+            $response['post'] = $post;
+            $response['message'] = 'Post Updated Successfully';
+            return $this->successResponse($response);
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+            // something went wrong
+            $response['message'] = 'Post can not save properly';
+            return $this->failureResponse($response);
+        }
 
     }
 
@@ -111,11 +120,19 @@ class PostController extends Controller
      */
     public function destroy($id) {
         $post = Post::findOrFail($id);
-        $post->delete();
-
-        return redirect()->route('admin.posts.index')
-            ->with('msg',
-                'Article successfully deleted');
+        DB::beginTransaction();
+        try {
+            $post->delete();
+            DB::commit();
+            $response['message'] = 'Post Successfully Deleted';
+            return $this->successResponse($response);
+            // all good
+        } catch (\Exception $e) {
+            DB::rollback();
+            // something went wrong
+            $response['message'] = 'Post can not Delete properly';
+            return $this->failureResponse($response);
+        }
 
     }
 }
