@@ -34,8 +34,8 @@
                             <td>{{$index+1}}</td>
                             <td>{{$user->name}}</td>
                             <td>{{$user->email}}</td>
-                            <td>{{$user->getRoleDisplayNames()->implode(", ")}}</td>
-                            <td>{{$user->getPermissionDisplayNames()->implode(", ")}}</td>
+                            <td>{{$user->role_display_names->implode(", ")}}</td>
+                            <td>{{$user->permission_display_names->implode(", ")}}</td>
                             <td class="text-center">
                                 <div class="btn-group">
                                     @can('users.edit')

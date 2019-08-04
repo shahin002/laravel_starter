@@ -2,11 +2,13 @@
 
 namespace App\Exceptions;
 
+use App\Http\Traits\ApiStatus;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
+    use ApiStatus;
     /**
      * A list of the exception types that are not reported.
      *
@@ -46,6 +48,13 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof \Spatie\Permission\Exceptions\UnauthorizedException) {
+            if ($request->wantsJson()){
+                $response=array();
+                $response['message'] = 'You are not the right person for this api.';
+                return $this->failureResponse($response);
+            }
+        }
         return parent::render($request, $exception);
     }
 }

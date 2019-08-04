@@ -45,18 +45,12 @@ class User extends Authenticatable
         $this->attributes['password'] = bcrypt($password);
     }
 
-    public function getAllPermissionsName()
-    {
-        return $this->getAllPermissions()->pluck('name');
-    }
-
-
-    public function getRoleDisplayNames(): Collection
+    public function getRoleDisplayNamesAttribute(): Collection
     {
         return $this->roles->pluck('display_name');
     }
 
-    public function getPermissionDisplayNames(): Collection
+    public function getPermissionDisplayNamesAttribute(): Collection
     {
         return $this->permissions->pluck('display_name');
     }
